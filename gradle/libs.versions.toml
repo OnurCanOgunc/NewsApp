@@ -19,8 +19,6 @@ converterMoshi = "2.9.0"
 coil = "2.6.0"
 paginationCompose = "3.3.2"
 androidxPaging = "3.3.2"
-kotlin_parcelize = "2.0.21"
-kotlinx_serialization = "1.6.22"
 
 
 [libraries]
