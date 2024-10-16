@@ -3,9 +3,7 @@ package com.decode.composenews.presentation.screens.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +17,6 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -38,6 +35,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.decode.composenews.R
+import com.decode.composenews.presentation.components.BreakingNews
 import com.decode.composenews.ui.theme.SearchBackground
 import com.decode.composenews.ui.theme.ExtraLightText
 import com.decode.composenews.ui.theme.IconTint
@@ -48,19 +46,20 @@ fun HomeScreen(
 ) {
     var searchText by remember { mutableStateOf("") }
 
-    Surface(modifier = modifier.padding(top = 10.dp)) {
-        Column {
+        Column(
+            modifier.padding(top = 16.dp)
+        ) {
             HeaderContent()
-            Spacer(modifier = Modifier.height(16.dp))
             SearchBar(
+                modifier = Modifier.padding(top = 26.dp),
                 query = searchText,
                 onQueryChanged = {
                     searchText = it
                 },
                 onSearch = {}
             )
+            BreakingNews(textClick = {})
         }
-    }
 }
 
 @Composable
@@ -104,6 +103,7 @@ fun HeaderContent(
 
 @Composable
 fun SearchBar(
+    modifier: Modifier = Modifier,
     query: String,
     onQueryChanged: (String) -> Unit,
     onSearch: (String) -> Unit,
@@ -113,9 +113,9 @@ fun SearchBar(
         value = query,
         onValueChange = onQueryChanged,
         placeholder = { Text(text = "let's look at the news today") },
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 20.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
