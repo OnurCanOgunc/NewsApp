@@ -53,14 +53,14 @@ fun BreakingNews(
         }
         Spacer(modifier = Modifier.height(16.dp))
         BreakingNewsItem()
-        Spacer(modifier = Modifier.height(16.dp))
+
 
     }
 }
 
 
 @Composable
-fun BreakingNewsItem(modifier: Modifier = Modifier) {
+fun BreakingNewsItem() {
     val pagerState = rememberPagerState { 13}
 
     HorizontalPager(

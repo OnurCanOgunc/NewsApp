@@ -40,7 +40,7 @@ fun TendingNewsChip(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .horizontalScroll(scrollState)
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = 20.dp, vertical = 2.dp)
     ) {
         options.forEachIndexed { index, option ->
             SegmentedButton(

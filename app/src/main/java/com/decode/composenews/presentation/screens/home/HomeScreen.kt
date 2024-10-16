@@ -3,7 +3,9 @@ package com.decode.composenews.presentation.screens.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.decode.composenews.R
 import com.decode.composenews.presentation.components.BreakingNews
+import com.decode.composenews.presentation.components.News
 import com.decode.composenews.presentation.components.TendingNewsChip
 import com.decode.composenews.ui.theme.SearchBackground
 import com.decode.composenews.ui.theme.ExtraLightText
@@ -61,6 +64,8 @@ fun HomeScreen(
             )
             BreakingNews(textClick = {})
             TendingNewsChip()
+            Spacer(modifier = Modifier.height(16.dp))
+            News()
         }
 }
 
