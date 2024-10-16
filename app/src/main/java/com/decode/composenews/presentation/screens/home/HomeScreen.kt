@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.decode.composenews.R
 import com.decode.composenews.presentation.components.BreakingNews
+import com.decode.composenews.presentation.components.TendingNewsChip
 import com.decode.composenews.ui.theme.SearchBackground
 import com.decode.composenews.ui.theme.ExtraLightText
 import com.decode.composenews.ui.theme.IconTint
@@ -59,6 +60,7 @@ fun HomeScreen(
                 onSearch = {}
             )
             BreakingNews(textClick = {})
+            TendingNewsChip()
         }
 }
 

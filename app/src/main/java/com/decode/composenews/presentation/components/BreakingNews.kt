@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -50,7 +51,9 @@ fun BreakingNews(
                 Text(text = "See All", color = Accent)
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
         BreakingNewsItem()
+        Spacer(modifier = Modifier.height(16.dp))
 
     }
 }
@@ -107,8 +110,6 @@ fun BreakingNewsItem(modifier: Modifier = Modifier) {
                         shape = RoundedCornerShape(19.dp)
                     )
                     .size(width = 12.dp, height = 3.dp)
-
-
             )
         }
     }
