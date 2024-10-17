@@ -8,21 +8,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,49 +25,69 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.decode.composenews.R
-import com.decode.composenews.presentation.components.BreakingNews
 import com.decode.composenews.presentation.components.News
+import com.decode.composenews.presentation.components.SearchBar
 import com.decode.composenews.presentation.components.TendingNewsChip
-import com.decode.composenews.ui.theme.SearchBackground
-import com.decode.composenews.ui.theme.ExtraLightText
-import com.decode.composenews.ui.theme.IconTint
+import com.decode.composenews.presentation.screens.NewsViewModel
+import com.decode.composenews.presentation.ui.theme.ExtraLightText
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    newsViewModel: NewsViewModel = hiltViewModel(),
 ) {
     var searchText by remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val news = newsViewModel.newsPagingFlow.collectAsLazyPagingItems()
+    val searchNews = newsViewModel.searchNews.collectAsLazyPagingItems()
 
-        Column(
-            modifier.padding(top = 16.dp)
-        ) {
-            HeaderContent()
-            SearchBar(
-                modifier = Modifier.padding(top = 26.dp),
-                query = searchText,
-                onQueryChanged = {
-                    searchText = it
-                },
-                onSearch = {}
+    if (news.loadState.refresh is LoadState.Error) {
+        LaunchedEffect(snackbarHostState) {
+            snackbarHostState.showSnackbar(
+                (news.loadState.refresh as LoadState.Error).error.message.orEmpty()
             )
-            BreakingNews(textClick = {})
-            TendingNewsChip()
-            Spacer(modifier = Modifier.height(16.dp))
-            News()
         }
+    }
+
+    Column(
+        modifier.padding(top = 16.dp)
+    ) {
+        HeaderContent()
+        SearchBar(
+            modifier = Modifier.padding(top = 26.dp),
+            query = searchText,
+            onQueryChanged = {
+                searchText = it
+            },
+            onSearch = {
+                newsViewModel.searchNews(it)
+            }
+        )
+        TendingNewsChip(
+            onCategorySelected = { category ->
+                newsViewModel.setSelectedCategory(category) // Seçilen kategoriyi ViewModel'e iletiyoruz
+            }
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        if (searchText.isNotEmpty()) {
+            News(news = searchNews)
+        } else {
+            News(news = news)
+        }
+
+    }
 }
 
 @Composable
 fun HeaderContent(
     modifier: Modifier = Modifier,
     name: String = "Onur Can Öğünç",
-    userImage: Int = R.drawable.img_user
 ) {
     Row(
         modifier = modifier
@@ -82,7 +96,7 @@ fun HeaderContent(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(userImage),
+            painter = painterResource(R.drawable.img_user),
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
@@ -108,60 +122,4 @@ fun HeaderContent(
     }
 }
 
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    query: String,
-    onQueryChanged: (String) -> Unit,
-    onSearch: (String) -> Unit,
-) {
-    val focusManager = LocalFocusManager.current
-    TextField(
-        value = query,
-        onValueChange = onQueryChanged,
-        placeholder = { Text(text = "let's look at the news today") },
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp),
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Search,
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                focusManager.clearFocus()
-                onSearch(query)
-            }
-        ),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search Icon",
-            )
-        },
-        trailingIcon = {
-            if (query.isNotEmpty()) {
-                IconButton(onClick = {
-                    onQueryChanged("")
-                    focusManager.clearFocus()
-                }) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear Icon"
-                    )
-                }
-            }
-        },
-        shape = RoundedCornerShape(13.dp),
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = SearchBackground,
-            focusedContainerColor = SearchBackground,
-            focusedLeadingIconColor = IconTint,  // Odaklanıldığında ikon rengi
-            unfocusedLeadingIconColor = IconTint,
-            unfocusedIndicatorColor   = Color.White,
-            focusedIndicatorColor = Color.White,
-            unfocusedPlaceholderColor = ExtraLightText,
-            focusedPlaceholderColor = ExtraLightText,
-        )
-    )
-}
+

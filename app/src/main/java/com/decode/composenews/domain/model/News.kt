@@ -1,11 +1,6 @@
-package com.decode.composenews.data.local.entity
+package com.decode.composenews.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "news")
-data class NewsEntity(
-    @PrimaryKey
+data class News(
     val id: String ,
     val author: String = "",
     val category: List<String> = listOf(),

@@ -26,7 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.dropUnlessResumed
-import com.decode.composenews.ui.theme.Accent
+import com.decode.composenews.presentation.ui.theme.Accent
 
 data class NavItemState(
     val title: String,

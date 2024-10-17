@@ -1,4 +1,4 @@
-package com.decode.composenews.ui.theme
+package com.decode.composenews.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

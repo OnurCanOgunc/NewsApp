@@ -1,6 +1,6 @@
 package com.decode.composenews.data.remote.dto
 
-data class News(
+data class NewsResponse(
     val author: String = "",
     val category: List<String> = listOf(),
     val description: String = "",
