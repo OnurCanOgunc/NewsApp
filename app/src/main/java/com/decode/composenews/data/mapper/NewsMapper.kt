@@ -3,6 +3,7 @@ package com.decode.composenews.data.mapper
 import com.decode.composenews.data.local.entity.NewsEntity
 import com.decode.composenews.data.remote.dto.NewsResponse
 import com.decode.composenews.domain.model.News
+import com.decode.composenews.util.cleanDate
 
 fun NewsResponse.toNewsEntity(): NewsEntity{
     return NewsEntity(
@@ -11,7 +12,7 @@ fun NewsResponse.toNewsEntity(): NewsEntity{
         category = category,
         description = description,
         image = image,
-        published = published,
+        published = published.cleanDate(),
         title = title,
         url = url,
     )
@@ -24,7 +25,7 @@ fun NewsResponse.toNews(): News{
         category = category,
         description = description,
         image = image,
-        published = published,
+        published = published.cleanDate(),
         title = title,
         url = url,
     )
@@ -37,7 +38,7 @@ fun NewsEntity.toNews(): News{
         category = category,
         description = description,
         image = image,
-        published = published,
+        published = published.cleanDate(),
         title = title,
         url = url,
     )
