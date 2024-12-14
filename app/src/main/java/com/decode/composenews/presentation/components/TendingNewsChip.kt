@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.decode.composenews.presentation.ui.theme.Accent
+import okhttp3.internal.immutableListOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,16 +28,10 @@ fun TendingNewsChip(
     onCategorySelected: (String?) -> Unit
 ) {
     var checkedItem by remember { mutableIntStateOf(0) }
-    val options = listOf<String>(
-        "sports",
-        "general",
-        "programming",
-        "science",
-        "politics",
-        "world",
-        "health",
-        "opinion",
-        "food",
+    val options = immutableListOf<String>(
+        "sports", "general", "programming",
+        "science", "politics", "world",
+        "health", "opinion", "food",
         "game"
     )
     val scrollState = rememberScrollState()

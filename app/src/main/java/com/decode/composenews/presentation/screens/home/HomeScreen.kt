@@ -17,14 +17,12 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,16 +34,16 @@ import com.decode.composenews.presentation.components.SearchBar
 import com.decode.composenews.presentation.components.TendingNewsChip
 import com.decode.composenews.presentation.screens.NewsViewModel
 import com.decode.composenews.presentation.ui.theme.ExtraLightText
+import androidx.compose.runtime.getValue
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     newsViewModel: NewsViewModel = hiltViewModel(),
 ) {
-    var searchText by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val news = newsViewModel.newsPagingFlow.collectAsLazyPagingItems()
-    val searchNews = newsViewModel.searchNews.collectAsLazyPagingItems()
+    val searchText by newsViewModel.searchText.collectAsState()
 
     if (news.loadState.refresh is LoadState.Error) {
         LaunchedEffect(snackbarHostState) {
@@ -60,27 +58,19 @@ fun HomeScreen(
     ) {
         HeaderContent()
         SearchBar(
-            modifier = Modifier.padding(top = 26.dp),
             query = searchText,
             onQueryChanged = {
-                searchText = it
+                newsViewModel.setSearchText(it)
             },
-            onSearch = {
-                newsViewModel.searchNews(it)
-            }
+            modifier = Modifier.padding(top = 26.dp),
         )
         TendingNewsChip(
             onCategorySelected = { category ->
-                newsViewModel.setSelectedCategory(category) // Seçilen kategoriyi ViewModel'e iletiyoruz
+                newsViewModel.setSelectedCategory(category)
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        if (searchText.isNotEmpty()) {
-            News(news = searchNews)
-        } else {
-            News(news = news)
-        }
-
+        News(news = news)
     }
 }
 
@@ -97,7 +87,7 @@ fun HeaderContent(
     ) {
         Image(
             painter = painterResource(R.drawable.img_user),
-            contentDescription = null,
+            contentDescription = "",
             modifier = Modifier.size(48.dp)
         )
         Column(

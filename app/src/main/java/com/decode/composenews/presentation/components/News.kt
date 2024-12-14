@@ -90,12 +90,16 @@ fun NewsItem(modifier: Modifier = Modifier,news: News) {
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    news.author,
+                    modifier = Modifier.weight(05f).padding(end = 8.dp),
+                    text = news.author,
                     fontSize = 12.sp,
                     color = LightText,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    news.published,
+                    modifier = Modifier.weight(05f),
+                    text = news.published,
                     fontSize = 12.sp,
                     color = LightText,
                 )

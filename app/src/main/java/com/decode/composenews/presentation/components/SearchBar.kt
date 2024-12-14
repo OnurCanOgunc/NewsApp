@@ -14,7 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -29,10 +32,9 @@ import com.decode.composenews.presentation.ui.theme.SearchBackground
 
 @Composable
 fun SearchBar(
-    modifier: Modifier = Modifier,
     query: String,
+    modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit,
-    onSearch: (String) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -51,9 +53,8 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
-                keyboardController?.hide()
+                //onSearch(query)
                 focusManager.clearFocus()
-                onSearch(query)
             }
         ),
         leadingIcon = {
@@ -65,9 +66,9 @@ fun SearchBar(
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = {
-                    onSearch("")
                     onQueryChanged("")
-                    focusManager.clearFocus()
+                    //onSearch("")
+                    keyboardController?.hide()
                 }) {
                     Icon(
                         imageVector = Icons.Default.Clear,

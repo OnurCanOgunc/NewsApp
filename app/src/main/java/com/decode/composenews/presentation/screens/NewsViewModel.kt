@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,35 +23,31 @@ class NewsViewModel @Inject constructor(
     private val getNewsUseCase: GetNewsUseCase,
     private val getSearchNewsUseCase: GetSearchNewsUseCase,
 ): ViewModel() {
-    private val _selectedCategory = MutableStateFlow<String?>("sports")
+    private val _selectedCategory = MutableStateFlow<String>("sports")
     val selectedCategory= _selectedCategory.asStateFlow()
 
     private val _searchNews = MutableStateFlow<PagingData<News>>(PagingData.empty())
     val searchNews = _searchNews.asStateFlow()
 
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
-    val newsPagingFlow: Flow<PagingData<News>> = selectedCategory.flatMapLatest { category ->
-        getNewsUseCase(category).cachedIn(viewModelScope)
-    }
+    val newsPagingFlow: Flow<PagingData<News>> = combine(selectedCategory, searchText) { category, query ->
+        if (query.isNotEmpty()) {
+            getSearchNewsUseCase(query, category).cachedIn(viewModelScope)
+        } else {
+            getNewsUseCase(category).cachedIn(viewModelScope)
+        }
+    }.flatMapLatest { it }
 
     fun setSelectedCategory(category: String?) {
-        _selectedCategory.value = category
+        if (_selectedCategory.value != category) {
+            _selectedCategory.value = category ?: "sports"
+        }
     }
 
-    fun searchNews(query: String) {
-        viewModelScope.launch {
-            if (query.isEmpty()) {
-                _searchNews.value = PagingData.empty()
-                return@launch
-            } else {
-                try {
-                    getSearchNewsUseCase(query).cachedIn(viewModelScope).collect {
-                        _searchNews.value = it
-                    }
-                } catch (e: Exception) {
-                    Log.e("NewsViewModel", "Error: ${e.message}")
-                }
-            }
-        }
+    fun setSearchText(text: String) {
+        _searchText.value = text
     }
 }
