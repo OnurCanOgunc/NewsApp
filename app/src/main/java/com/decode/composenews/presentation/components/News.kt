@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,20 +32,43 @@ import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.ui.theme.LightText
 
 @Composable
-fun News(modifier: Modifier = Modifier,news:LazyPagingItems<News>) {
+fun News(modifier: Modifier = Modifier, news: LazyPagingItems<News>?) {
 
-    Box(modifier.fillMaxSize()) {
-        if (news.loadState.refresh is LoadState.Loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+    if (news == null) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "No news available.", color = Color.Gray)
         }
-        else {
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                items(news.itemCount,key = news.itemKey { it.id },) { index->
-                    news[index]?.let {
-                        NewsItem(news = it)
+        return
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        when (news.loadState.refresh) {
+            is LoadState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is LoadState.Error -> {
+                Text(
+                    text = "Error loading news.",
+                    modifier = Modifier.align(Alignment.Center),
+                    color = Color.Red
+                )
+            }
+            else -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(
+                        count = news.itemCount,
+                        key = news.itemKey { it.id },
+                    ) { index ->
+                        news[index]?.let {
+                            NewsItem(news = it)
+                        }
                     }
                 }
             }

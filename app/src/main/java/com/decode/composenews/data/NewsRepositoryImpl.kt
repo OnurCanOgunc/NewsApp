@@ -15,6 +15,7 @@ import com.decode.composenews.domain.model.News
 import com.decode.composenews.domain.repository.NewsRepository
 import com.decode.composenews.util.Constants.INITIAL_LOAD_SIZE
 import com.decode.composenews.util.Constants.PAGE_SIZE
+import com.decode.composenews.util.Constants.PREFETCH_DISTANCE
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -31,7 +32,7 @@ class NewsRepositoryImpl @Inject constructor(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
                 initialLoadSize = INITIAL_LOAD_SIZE,
-                prefetchDistance = 5
+                prefetchDistance = PREFETCH_DISTANCE
             ),
             remoteMediator = NewsRemoteMediator(
                 newsDatabase = newsDb,
@@ -46,22 +47,25 @@ class NewsRepositoryImpl @Inject constructor(
                 newsEntity.toNews()
             }
         }.catch { e ->
+            emit(PagingData.empty())
             Log.e("NewsRepositoryImpl", "Error: ${e.message}")
 
         }
 
     }
 
-    override fun getSearchNews(keyword: String): Flow<PagingData<News>> {
+    override fun getSearchNews(keyword: String,category: String?): Flow<PagingData<News>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
                 SearchNewsPagingSource(
                     newsService = newsService,
-                    keyword = keyword
+                    keyword = keyword,
+                    category = category
                 )
             }
         ).flow.catch {
+            emit(PagingData.empty())
             Log.e("NewsRepositoryImpl", "Error: ${it.message}")
         }
     }

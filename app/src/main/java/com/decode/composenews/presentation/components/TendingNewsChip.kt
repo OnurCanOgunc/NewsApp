@@ -25,7 +25,7 @@ import okhttp3.internal.immutableListOf
 @Composable
 fun TendingNewsChip(
     modifier: Modifier = Modifier,
-    onCategorySelected: (String?) -> Unit
+    onCategorySelected: (String) -> Unit
 ) {
     var checkedItem by remember { mutableIntStateOf(0) }
     val options = immutableListOf<String>(

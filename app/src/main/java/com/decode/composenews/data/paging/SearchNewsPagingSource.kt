@@ -10,7 +10,8 @@ import retrofit2.HttpException
 
 class SearchNewsPagingSource(
     private val newsService: NewsService,
-    private val keyword: String
+    private val keyword: String,
+    val category: String? = null
 ): PagingSource<Int, News>() {
 
     companion object {
@@ -28,7 +29,8 @@ class SearchNewsPagingSource(
             val news = newsService.getNSearchNews(
                 keyword = keyword,
                 pageSize = params.loadSize,
-                page = currentPage
+                page = currentPage,
+                category = category
             )
 
             val endOfPaginationReached = news.news.isEmpty()
