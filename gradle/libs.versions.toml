@@ -19,7 +19,7 @@ converterMoshi = "2.9.0"
 coil = "2.6.0"
 paginationCompose = "3.3.2"
 androidxPaging = "3.3.2"
-
+materialIconsExtended = "1.7.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +51,8 @@ coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "
 room-paging = {group = "androidx.room", name = "room-paging",version = "room"}
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidxPaging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paginationCompose" }
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+
 
 
 [plugins]
