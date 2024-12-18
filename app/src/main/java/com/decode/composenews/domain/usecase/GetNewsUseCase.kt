@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetNewsUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
-    operator fun invoke(category: String?): Flow<PagingData<News>> {
+    operator fun invoke(category: String): Flow<PagingData<News>> {
         return newsRepository.getNews(category = category).flowOn(Dispatchers.IO)
     }
 }

@@ -12,6 +12,6 @@ class GetSearchNewsUseCase @Inject constructor(
     private val newsRepository: NewsRepository
 ) {
 
-    operator fun invoke(keyword: String, category: String?): Flow<PagingData<News>> =
+    operator fun invoke(keyword: String, category: String): Flow<PagingData<News>> =
         newsRepository.getSearchNews(keyword = keyword, category = category).flowOn(Dispatchers.IO)
 }

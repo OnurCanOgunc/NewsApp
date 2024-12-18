@@ -17,8 +17,8 @@ interface NewsService {
 
     @GET(END_POINT_SEARCH)
     suspend fun getNSearchNews(
-        @Query("categories") category: String?,
         @Query("keywords") keyword: String,
+        @Query("category") category: String,
         @Query("language") language: String = LANGUAGE,
         @Query("page_size") pageSize: Int,
         @Query("page_number") page: Int): NewsDto

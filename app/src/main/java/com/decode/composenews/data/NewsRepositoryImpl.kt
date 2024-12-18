@@ -27,7 +27,7 @@ class NewsRepositoryImpl @Inject constructor(
 ) : NewsRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getNews(category: String?): Flow<PagingData<News>> {
+    override fun getNews(category: String): Flow<PagingData<News>> {
         return Pager(
             config = PagingConfig(
                 pageSize = PAGE_SIZE,
@@ -54,7 +54,7 @@ class NewsRepositoryImpl @Inject constructor(
 
     }
 
-    override fun getSearchNews(keyword: String,category: String?): Flow<PagingData<News>> {
+    override fun getSearchNews(keyword: String,category: String): Flow<PagingData<News>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {

@@ -1,5 +1,6 @@
 package com.decode.composenews.data.paging
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.decode.composenews.data.mapper.toNews
@@ -11,7 +12,7 @@ import retrofit2.HttpException
 class SearchNewsPagingSource(
     private val newsService: NewsService,
     private val keyword: String,
-    val category: String? = null
+    val category: String
 ): PagingSource<Int, News>() {
 
     companion object {

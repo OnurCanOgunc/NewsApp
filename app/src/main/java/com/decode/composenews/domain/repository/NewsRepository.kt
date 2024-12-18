@@ -5,6 +5,6 @@ import com.decode.composenews.domain.model.News
 import kotlinx.coroutines.flow.Flow
 
 interface NewsRepository {
-    fun getNews(category: String?): Flow<PagingData<News>>
-    fun getSearchNews(keyword: String, category: String?): Flow<PagingData<News>>
+    fun getNews(category: String): Flow<PagingData<News>>
+    fun getSearchNews(keyword: String, category: String): Flow<PagingData<News>>
 }

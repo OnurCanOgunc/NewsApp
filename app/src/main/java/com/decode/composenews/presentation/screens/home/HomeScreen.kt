@@ -1,5 +1,6 @@
 package com.decode.composenews.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,11 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.decode.composenews.R
 import com.decode.composenews.presentation.components.News
 import com.decode.composenews.presentation.components.SearchBar
@@ -35,6 +34,10 @@ import com.decode.composenews.presentation.components.TendingNewsChip
 import com.decode.composenews.presentation.screens.NewsViewModel
 import com.decode.composenews.presentation.ui.theme.ExtraLightText
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.decode.composenews.presentation.screens.NewsContract.HomeUIEffect
+import com.decode.composenews.presentation.screens.NewsContract.HomeUIEvent
 
 @Composable
 fun HomeScreen(
@@ -42,14 +45,16 @@ fun HomeScreen(
     newsViewModel: NewsViewModel = hiltViewModel(),
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val news = newsViewModel.newsPagingFlow.collectAsLazyPagingItems()
-    val searchText by newsViewModel.searchText.collectAsState()
+    val uiState by newsViewModel.uiState.collectAsStateWithLifecycle()
+    val news = uiState.news?.collectAsLazyPagingItems()
 
-    if (news.loadState.refresh is LoadState.Error) {
-        LaunchedEffect(snackbarHostState) {
-            snackbarHostState.showSnackbar(
-                (news.loadState.refresh as LoadState.Error).error.message.orEmpty()
-            )
+    LaunchedEffect(Unit) {
+        newsViewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is HomeUIEffect.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(effect.message)
+                }
+            }
         }
     }
 
@@ -58,19 +63,23 @@ fun HomeScreen(
     ) {
         HeaderContent()
         SearchBar(
-            query = searchText,
-            onQueryChanged = {
-                newsViewModel.setSearchText(it)
+            query = uiState.searchText,
+            onQueryChanged = { query ->
+                newsViewModel.onEvent(HomeUIEvent.Search(query))
             },
             modifier = Modifier.padding(top = 26.dp),
         )
         TendingNewsChip(
             onCategorySelected = { category ->
-                newsViewModel.setSelectedCategory(category)
+                newsViewModel.onEvent(HomeUIEvent.SelectCategory(category))
             }
         )
         Spacer(modifier = Modifier.height(16.dp))
+        Log.e("HomeScreen", "news: ${uiState.selectedCategory}")
         News(news = news)
+
+        // Snackbar
+        SnackbarHost(hostState = snackbarHostState)
     }
 }
 
