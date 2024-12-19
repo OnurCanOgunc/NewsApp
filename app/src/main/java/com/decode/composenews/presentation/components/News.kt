@@ -1,8 +1,6 @@
 package com.decode.composenews.presentation.components
 
-import android.util.Log
-import android.util.Log.e
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,14 +31,17 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.decode.composenews.R
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.ui.theme.Accent
 import com.decode.composenews.presentation.ui.theme.LightText
 
 @Composable
-fun News(modifier: Modifier = Modifier, news: LazyPagingItems<News>?) {
+fun News(
+    modifier: Modifier = Modifier,
+    news: LazyPagingItems<News>?,
+    navigate: (String) -> Unit
+    ) {
 
     if (news == null) {
         Box(
@@ -78,7 +79,7 @@ fun News(modifier: Modifier = Modifier, news: LazyPagingItems<News>?) {
                         key = news.itemKey { it.id },
                     ) { index ->
                         news[index]?.let {
-                            NewsItem(news = it)
+                            NewsItem(news = it, navigate = navigate)
                         }
                     }
                 }
@@ -88,10 +89,13 @@ fun News(modifier: Modifier = Modifier, news: LazyPagingItems<News>?) {
 }
 
 @Composable
-fun NewsItem(modifier: Modifier = Modifier, news: News) {
+fun NewsItem(modifier: Modifier = Modifier, news: News,navigate: (String) -> Unit) {
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable{
+                navigate(news.id)
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

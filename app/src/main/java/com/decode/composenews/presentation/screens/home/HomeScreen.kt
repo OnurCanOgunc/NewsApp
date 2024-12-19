@@ -43,6 +43,7 @@ import com.decode.composenews.presentation.screens.NewsContract.HomeUIEvent
 fun HomeScreen(
     modifier: Modifier = Modifier,
     newsViewModel: NewsViewModel = hiltViewModel(),
+    navigate: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val uiState by newsViewModel.uiState.collectAsStateWithLifecycle()
@@ -76,7 +77,7 @@ fun HomeScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Log.e("HomeScreen", "news: ${uiState.selectedCategory}")
-        News(news = news)
+        News(news = news, navigate = navigate)
 
         // Snackbar
         SnackbarHost(hostState = snackbarHostState)
