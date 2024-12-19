@@ -16,8 +16,12 @@ import com.decode.composenews.domain.repository.NewsRepository
 import com.decode.composenews.util.Constants.INITIAL_LOAD_SIZE
 import com.decode.composenews.util.Constants.PAGE_SIZE
 import com.decode.composenews.util.Constants.PREFETCH_DISTANCE
+import com.decode.composenews.util.NewsResult
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -68,5 +72,18 @@ class NewsRepositoryImpl @Inject constructor(
             emit(PagingData.empty())
             Log.e("NewsRepositoryImpl", "Error: ${it.message}")
         }
+    }
+
+    override fun getArticle(newsId: String): Flow<NewsResult<News>> {
+        return flow {
+            val result = newsDb.newsDao().getArticle(newsId)?.toNews()
+                result?.let {
+                    emit(NewsResult.Success(it))
+                }?: emit(NewsResult.Error("Article not found"))  // Başarı durumunda Success türünü döndür
+
+        }.catch { exception ->
+            Log.e("NewsRepositoryImpl", "Error: ${exception.message}")
+            emit(NewsResult.Error(exception.message.toString()))  // Hata durumunda Error türünü döndür
+        }.flowOn(Dispatchers.IO)
     }
 }
