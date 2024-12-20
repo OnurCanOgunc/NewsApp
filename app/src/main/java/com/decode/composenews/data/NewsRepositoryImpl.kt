@@ -86,4 +86,16 @@ class NewsRepositoryImpl @Inject constructor(
             emit(NewsResult.Error(exception.message.toString()))  // Hata durumunda Error türünü döndür
         }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun saveArticle(news: News) {
+        newsDb.newsDao().updateSavedStatus(news.id, news.saved)
+    }
+
+    override fun getSavedNews(): Flow<List<News>> {
+        return newsDb.newsDao().getSavedNews().map {
+            it.map { newsEntity ->
+                newsEntity.toNews()
+            }
+        }.flowOn(Dispatchers.IO)
+    }
 }

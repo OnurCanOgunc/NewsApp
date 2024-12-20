@@ -41,5 +41,6 @@ fun NewsEntity.toNews(): News{
         published = published,
         title = title,
         url = url,
+        saved = saved
     )
 }

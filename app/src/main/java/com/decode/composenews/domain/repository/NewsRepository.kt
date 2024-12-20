@@ -9,4 +9,6 @@ interface NewsRepository {
     fun getNews(category: String): Flow<PagingData<News>>
     fun getSearchNews(keyword: String, category: String): Flow<PagingData<News>>
     fun getArticle(newsId: String): Flow<NewsResult<News>>
+    suspend fun saveArticle(news: News)
+    fun getSavedNews(): Flow<List<News>>
 }
