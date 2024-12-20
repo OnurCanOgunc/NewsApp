@@ -11,5 +11,6 @@ data class News(
     val image: String = "",
     val published: String = "",
     val title: String = "",
-    val url: String = ""
+    val url: String = "",
+    val saved: Boolean = false
 )

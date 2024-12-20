@@ -33,6 +33,7 @@ class SearchNewsPagingSource(
                 page = currentPage,
                 category = category
             )
+            Log.e("SearchNewsPagingSource", "news: $news")
 
             val endOfPaginationReached = news.news.isEmpty()
 

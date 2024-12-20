@@ -31,13 +31,12 @@ import com.decode.composenews.R
 import com.decode.composenews.presentation.components.News
 import com.decode.composenews.presentation.components.SearchBar
 import com.decode.composenews.presentation.components.TendingNewsChip
-import com.decode.composenews.presentation.screens.NewsViewModel
 import com.decode.composenews.presentation.ui.theme.ExtraLightText
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.decode.composenews.presentation.screens.NewsContract.HomeUIEffect
-import com.decode.composenews.presentation.screens.NewsContract.HomeUIEvent
+import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEffect
+import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEvent
 
 @Composable
 fun HomeScreen(

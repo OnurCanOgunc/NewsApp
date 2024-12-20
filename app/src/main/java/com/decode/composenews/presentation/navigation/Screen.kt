@@ -6,5 +6,9 @@ sealed class Screen {
     @Serializable
     object Home : Screen()
     @Serializable
-    data class Detail(val newsId: String) : Screen()
+    data class Article(val newsId: String) : Screen()
+    @Serializable
+    object FeedNews : Screen()
+    @Serializable
+    object RecordedNews : Screen()
 }

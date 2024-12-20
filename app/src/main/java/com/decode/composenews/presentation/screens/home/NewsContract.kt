@@ -1,4 +1,4 @@
-package com.decode.composenews.presentation.screens
+package com.decode.composenews.presentation.screens.home
 
 import androidx.paging.PagingData
 import com.decode.composenews.domain.model.News

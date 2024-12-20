@@ -1,6 +1,5 @@
-package com.decode.composenews.presentation.screens
+package com.decode.composenews.presentation.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,9 +7,6 @@ import androidx.paging.cachedIn
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.domain.usecase.GetNewsUseCase
 import com.decode.composenews.domain.usecase.GetSearchNewsUseCase
-import com.decode.composenews.presentation.screens.NewsContract.HomeUIEffect
-import com.decode.composenews.presentation.screens.NewsContract.HomeUIEvent
-import com.decode.composenews.presentation.screens.NewsContract.HomeUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -19,8 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -35,21 +29,19 @@ class NewsViewModel @Inject constructor(
     private val getSearchNewsUseCase: GetSearchNewsUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUIState())
+    private val _uiState = MutableStateFlow(NewsContract.HomeUIState())
     val uiState = _uiState
         .onStart {
             _uiState.update { it.copy(news = newsPagingFlow) }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeUIState()
+            initialValue = NewsContract.HomeUIState()
         )
 
-    private val _uiEffect = MutableSharedFlow<HomeUIEffect>()
-    val uiEffect: SharedFlow<HomeUIEffect> = _uiEffect
+    private val _uiEffect = MutableSharedFlow<NewsContract.HomeUIEffect>()
+    val uiEffect: SharedFlow<NewsContract.HomeUIEffect> = _uiEffect
 
-//    private val _selectedCategory = MutableStateFlow("sports")
-//    private val _searchText = MutableStateFlow("")
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val newsPagingFlow: Flow<PagingData<News>> =
@@ -66,32 +58,30 @@ class NewsViewModel @Inject constructor(
             }
             .cachedIn(viewModelScope)
 
-    fun onEvent(event: HomeUIEvent) {
+    fun onEvent(event: NewsContract.HomeUIEvent) {
         when (event) {
-            is HomeUIEvent.Search -> {
+            is NewsContract.HomeUIEvent.Search -> {
                 _uiState.update { it.copy(searchText = event.query, news = newsPagingFlow) }
-                //_searchText.value = event.query
             }
 
-            is HomeUIEvent.SelectCategory -> {
+            is NewsContract.HomeUIEvent.SelectCategory -> {
                 _uiState.update {
                     it.copy(selectedCategory = event.category, news = newsPagingFlow)
                 }
-                //_selectedCategory.value = event.category
             }
 
-            HomeUIEvent.Refresh -> { refreshNews()}
+            NewsContract.HomeUIEvent.Refresh -> { refreshNews()}
         }
     }
 
     private fun refreshNews() {
         viewModelScope.launch {
             _uiState.update { it.copy(searchText = "",news = newsPagingFlow) }
-            _uiEffect.emit(HomeUIEffect.ShowSnackbar("News refreshed"))
+            _uiEffect.emit(NewsContract.HomeUIEffect.ShowSnackbar("News refreshed"))
         }
     }
 
     private suspend fun handleError(throwable: Throwable) {
-        _uiEffect.emit(HomeUIEffect.ShowSnackbar(throwable.message ?: "An error occurred"))
+        _uiEffect.emit(NewsContract.HomeUIEffect.ShowSnackbar(throwable.message ?: "An error occurred"))
     }
 }
