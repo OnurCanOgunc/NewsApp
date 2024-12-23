@@ -1,6 +1,6 @@
 package com.decode.composenews.presentation.screens.recordednews
 
-import android.util.Log
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.decode.composenews.domain.model.News
@@ -32,21 +32,40 @@ class RecordNewsViewModel @Inject constructor(
     fun saveArticle(news: News) {
         viewModelScope.launch {
             savedArticle(news.copy(saved = !news.saved))
+            _uiState.value = _uiState.value.copy(
+                news = _uiState.value.news.map {
+                    if (it.id == news.id) {
+                        it.copy(saved = !it.saved)
+                    } else {
+                        it
+                    }
+                }
+            )
         }
     }
 
     fun loadSavedArticles() {
         viewModelScope.launch {
-            getSavedNews().collect {
-                _uiState.value = _uiState.value.copy(news = it)
-                Log.d("RecordNewsViewModel", "loadSavedArticles: ${it.size}")
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            try {
+                getSavedNews().collect { news ->
+                    _uiState.value = _uiState.value.copy(news = news, isLoading = false)
+                }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isError = true,
+                    isLoading = false,
+                    errorMessage = e.message ?: "Unknown error occurred"
+                )
             }
         }
     }
 }
 
+//@Immutable
 data class RecordNewsUIState(
     val news: List<News> = emptyList(),
     val isLoading: Boolean = false,
-    val isError: Boolean = false
+    val isError: Boolean = false,
+    val errorMessage: String = ""
 )

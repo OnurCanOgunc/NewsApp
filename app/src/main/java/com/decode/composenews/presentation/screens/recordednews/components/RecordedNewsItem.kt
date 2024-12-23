@@ -1,6 +1,7 @@
 package com.decode.composenews.presentation.screens.recordednews.components
 
 import android.R.attr.contentDescription
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.ui.theme.Accent
 import com.decode.composenews.presentation.ui.theme.LightText
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun RecordedNewsItem(
@@ -73,6 +78,7 @@ fun NewsItem(
     onSaveClick: (News) -> Unit,
     navigate: (String) -> Unit,
 ) {
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -135,15 +141,14 @@ fun NewsItem(
             IconButton(
                 onClick = {
                     onSaveClick(news)
+                    Log.d("TAG", "NewsItem: $news")
                 }
             ) {
                 Icon(
-                    imageVector =Icons.Filled.Bookmarks,
+                    imageVector = Icons.Filled.Bookmarks,
                     contentDescription = ""
                 )
             }
         }
     }
-
-
 }
