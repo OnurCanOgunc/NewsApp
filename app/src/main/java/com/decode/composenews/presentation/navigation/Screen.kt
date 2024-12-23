@@ -4,9 +4,12 @@ import kotlinx.serialization.Serializable
 
 sealed class Screen {
     @Serializable
-    object Home : Screen()
-    @Serializable
-    data class Article(val newsId: String) : Screen()
+    object Home {
+        @Serializable
+        object News : Screen()
+        @Serializable
+        data class Article(val newsId: String) : Screen()
+    }
     @Serializable
     object FeedNews : Screen()
     @Serializable
