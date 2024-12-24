@@ -65,7 +65,8 @@ class ArticleViewModel @Inject constructor(
         viewModelScope.launch {
             if (news != null) {
                 savedArticle(news.copy(saved = !news.saved))
-                Log.d("ArticleViewModel", "Article saved: ${news.saved}")
+                _uiState.value = _uiState.value.copy(news = news.copy(saved = !news.saved))
+
             }
         }
         // Kaydetme işlemi başarılıysa UIEffect tetiklenebilir:

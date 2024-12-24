@@ -8,6 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.decode.composenews.data.local.NewsDatabase
 import com.decode.composenews.data.mapper.toNews
+import com.decode.composenews.data.mapper.toSavedNewsEntity
 import com.decode.composenews.data.remote.NewsService
 import com.decode.composenews.data.paging.NewsRemoteMediator
 import com.decode.composenews.data.paging.SearchNewsPagingSource
@@ -46,8 +47,8 @@ class NewsRepositoryImpl @Inject constructor(
             pagingSourceFactory = {
                 newsDb.newsDao().getAllNews()
             }
-        ).flow.map {
-            it.map { newsEntity ->
+        ).flow.map { pagingData->
+            pagingData.map { newsEntity ->
                 newsEntity.toNews()
             }
         }.catch { e ->
@@ -79,22 +80,23 @@ class NewsRepositoryImpl @Inject constructor(
             val result = newsDb.newsDao().getArticle(newsId)?.toNews()
                 result?.let {
                     emit(NewsResult.Success(it))
-                }?: emit(NewsResult.Error("Article not found"))  // Başarı durumunda Success türünü döndür
+                }?: emit(NewsResult.Error("Article not found"))
 
         }.catch { exception ->
             Log.e("NewsRepositoryImpl", "Error: ${exception.message}")
-            emit(NewsResult.Error(exception.message.toString()))  // Hata durumunda Error türünü döndür
+            emit(NewsResult.Error(exception.message.toString()))
         }.flowOn(Dispatchers.IO)
     }
 
     override suspend fun saveArticle(news: News) {
-        newsDb.newsDao().updateSavedStatus(news.id, news.saved)
+        val savedNews = news.toSavedNewsEntity()
+        newsDb.savedNewsDao().insertSavedNews(savedNews)
     }
 
     override fun getSavedNews(): Flow<List<News>> {
-        return newsDb.newsDao().getSavedNews().map {
-            it.map { newsEntity ->
-                newsEntity.toNews()
+        return newsDb.savedNewsDao().getAllSavedNews().map {
+            it.map { savedNewsEntity ->
+                savedNewsEntity.toNews()
             }
         }.flowOn(Dispatchers.IO)
     }

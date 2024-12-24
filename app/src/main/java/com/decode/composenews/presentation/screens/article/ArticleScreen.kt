@@ -1,9 +1,11 @@
 package com.decode.composenews.presentation.screens.article
 
 import android.content.Context
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,10 +42,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.decode.composenews.R
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
@@ -56,14 +55,14 @@ import com.decode.composenews.util.shareNews
 fun ArticleScreen(
     modifier: Modifier = Modifier,
     newsId: String,
-    viewModel: ArticleViewModel = hiltViewModel(),
+    uiState: ArticleContract.ArticleUIState,
+    onEvent: (ArticleContract.ArticleUIEvent) -> Unit,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = true) {
-        viewModel.onEvent(ArticleContract.ArticleUIEvent.Load(newsId))
+        onEvent(ArticleContract.ArticleUIEvent.Load(newsId))
     }
 
     Scaffold(
@@ -99,19 +98,30 @@ fun ArticleScreen(
     ) { innerPadding ->
         when {
             uiState.isLoading -> {
-                CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
             uiState.isError -> {
-                Text("An error occurred while loading the news.", color = Color.Red, fontSize = 16.sp)
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("An error occurred while loading the news.", color = Color.Red, fontSize = 16.sp)
+                }
             }
 
             uiState.news != null -> {
                 NewsContent(
                     modifier = Modifier.padding(innerPadding),
-                    news = uiState.news!!,
+                    news = uiState.news,
                     context = context,
-                    viewModel = viewModel
+                    onEvent = onEvent
+
                 )
             }
         }
@@ -123,7 +133,7 @@ fun NewsContent(
     modifier: Modifier = Modifier,
     news: News,
     context: Context,
-    viewModel: ArticleViewModel
+    onEvent: (ArticleContract.ArticleUIEvent) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -183,9 +193,9 @@ fun NewsContent(
             Spacer(modifier = Modifier.width(8.dp))
             CustomButton(
                 text = "Save",
-                icon = if (news.saved) Icons.Outlined.Bookmark else Icons.Outlined.BookmarkBorder,
+                icon = if (news.saved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
                 onClick = {
-                    viewModel.onEvent(ArticleContract.ArticleUIEvent.Save(news))
+                    onEvent(ArticleContract.ArticleUIEvent.Save(news))
                 })
         }
         Text(
@@ -202,8 +212,5 @@ fun NewsContent(
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    ArticleScreen(
-        newsId = "1",
-        navigateUp = {}
-    )
+
 }

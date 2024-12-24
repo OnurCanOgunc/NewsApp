@@ -37,19 +37,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEffect
 import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEvent
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    newsViewModel: NewsViewModel = hiltViewModel(),
+    uiState: NewsContract.HomeUIState,
+    uiEffect: Flow<HomeUIEffect>,
+    onEvent: (HomeUIEvent) -> Unit,
     navigate: (String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val uiState by newsViewModel.uiState.collectAsStateWithLifecycle()
     val news = uiState.news?.collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
-        newsViewModel.uiEffect.collect { effect ->
+        uiEffect.collect { effect ->
             when (effect) {
                 is HomeUIEffect.ShowSnackbar -> {
                     snackbarHostState.showSnackbar(effect.message)
@@ -65,13 +67,13 @@ fun HomeScreen(
         SearchBar(
             query = uiState.searchText,
             onQueryChanged = { query ->
-                newsViewModel.onEvent(HomeUIEvent.Search(query))
+                onEvent(HomeUIEvent.Search(query))
             },
             modifier = Modifier.padding(top = 26.dp),
         )
         TendingNewsChip(
             onCategorySelected = { category ->
-                newsViewModel.onEvent(HomeUIEvent.SelectCategory(category))
+                onEvent(HomeUIEvent.SelectCategory(category))
             }
         )
         Spacer(modifier = Modifier.height(16.dp))

@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.domain.usecase.GetSavedNews
 import com.decode.composenews.domain.usecase.SaveArticle
+import com.decode.composenews.presentation.screens.recordednews.RecordNewsContract.RecordNewsUIEvent
+import com.decode.composenews.presentation.screens.recordednews.RecordNewsContract.RecordNewsUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,6 +30,12 @@ class RecordNewsViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = RecordNewsUIState()
     )
+    fun onEvent(event: RecordNewsUIEvent) {
+        when (event) {
+            RecordNewsUIEvent.LoadSavedArticles -> loadSavedArticles()
+            is RecordNewsUIEvent.SaveArticle -> saveArticle(event.news)
+        }
+    }
 
     fun saveArticle(news: News) {
         viewModelScope.launch {
@@ -62,10 +70,3 @@ class RecordNewsViewModel @Inject constructor(
     }
 }
 
-//@Immutable
-data class RecordNewsUIState(
-    val news: List<News> = emptyList(),
-    val isLoading: Boolean = false,
-    val isError: Boolean = false,
-    val errorMessage: String = ""
-)

@@ -1,5 +1,10 @@
 package com.decode.composenews.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -47,7 +52,7 @@ fun BottomAppBar(modifier: Modifier = Modifier, navController: NavController) {
             title = "Home",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
-            route = Screen.Home.News
+            route = Screen.News
         ),
         NavItemState(
             title = "Feed News",
@@ -65,7 +70,7 @@ fun BottomAppBar(modifier: Modifier = Modifier, navController: NavController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute =
-        navBackStackEntry?.destination?.route ?: Screen.Home.News::class.qualifiedName.orEmpty()
+        navBackStackEntry?.destination?.route ?: Screen.News::class.qualifiedName.orEmpty()
 
 //    argümanlı bir route yok
 //    val currentRouteTrimmed by remember(currentRoute) {
@@ -73,12 +78,16 @@ fun BottomAppBar(modifier: Modifier = Modifier, navController: NavController) {
 //    }
 
     val isVisible = rememberSaveable(navBackStackEntry) {
-        navBackStackEntry?.destination?.route == Screen.Home.News::class.qualifiedName ||
+        navBackStackEntry?.destination?.route == Screen.News::class.qualifiedName ||
                 navBackStackEntry?.destination?.route == Screen.FeedNews::class.qualifiedName ||
                 navBackStackEntry?.destination?.route == Screen.RecordedNews::class.qualifiedName
     }
 
-    if (isVisible) {
+    AnimatedVisibility(
+        visible = isVisible,
+        enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
+        exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
+    ) {
         NavigationBar(
             modifier = modifier
                 .padding(horizontal = 12.dp, vertical = 8.dp)

@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetSavedNews @Inject constructor(private val newsRepository: NewsRepository) {
-    operator fun invoke(): Flow<List<News>> = newsRepository.getSavedNews()
+    operator fun invoke(): Flow<List<News>> {
+        return newsRepository.getSavedNews()
+    }
 }

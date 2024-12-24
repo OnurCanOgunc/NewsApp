@@ -1,6 +1,5 @@
 package com.decode.composenews.presentation.screens.recordednews.components
 
-import android.R.attr.contentDescription
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,14 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.ui.theme.Accent
 import com.decode.composenews.presentation.ui.theme.LightText
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+
 
 @Composable
 fun RecordedNewsItem(
@@ -56,15 +52,14 @@ fun RecordedNewsItem(
 
     LazyColumn(
         modifier = Modifier
-            .padding(horizontal = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(
             items = news,
             key = { it.id },
         ) { item ->
             NewsItem(news = item, onSaveClick = onSaveClick, navigate = navigate)
-
         }
     }
 
@@ -82,7 +77,6 @@ fun NewsItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 16.dp)
             .clickable {
                 navigate(news.id)
             },
@@ -150,5 +144,6 @@ fun NewsItem(
                 )
             }
         }
+        HorizontalDivider()
     }
 }
