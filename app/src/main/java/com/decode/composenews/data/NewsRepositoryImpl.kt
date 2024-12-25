@@ -78,8 +78,9 @@ class NewsRepositoryImpl @Inject constructor(
     override fun getArticle(newsId: String): Flow<NewsResult<News>> {
         return flow {
             val result = newsDb.newsDao().getArticle(newsId)?.toNews()
+            val isSaved = newsDb.savedNewsDao().getAllSavedNewsId().contains(newsId)
                 result?.let {
-                    emit(NewsResult.Success(it))
+                    emit(NewsResult.Success(it.copy(saved = isSaved)))
                 }?: emit(NewsResult.Error("Article not found"))
 
         }.catch { exception ->
@@ -89,8 +90,19 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveArticle(news: News) {
+        Log.d("ArticleRepository", "Article saved: ${news.saved}")
+        if (!news.saved) {
+            val savedNews = news.toSavedNewsEntity()
+            newsDb.savedNewsDao().deleteSavedNews(savedNews)
+        } else {
+            val savedNews = news.toSavedNewsEntity()
+            newsDb.savedNewsDao().insertSavedNews(savedNews)
+        }
+    }
+
+    override suspend fun deleteArticle(news: News) {
         val savedNews = news.toSavedNewsEntity()
-        newsDb.savedNewsDao().insertSavedNews(savedNews)
+        newsDb.savedNewsDao().deleteSavedNews(savedNews)
     }
 
     override fun getSavedNews(): Flow<List<News>> {
