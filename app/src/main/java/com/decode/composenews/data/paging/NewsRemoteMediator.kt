@@ -1,6 +1,5 @@
 package com.decode.composenews.data.paging
 
-import android.util.Log
 import retrofit2.HttpException
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -57,11 +56,16 @@ class NewsRemoteMediator(
                     newsDatabase.newsDao().deleteAllNews()
                     newsDatabase.remoteKeyDao().clearRemoteKeys()
                 }
+                val savedNews = newsDatabase.savedNewsDao().getAllSavedNewsId()
                 val keys = news.news.map {
                     RemoteKeyEntity(id = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
                 newsDatabase.remoteKeyDao().insertAll(keys)
-                val newsEntities = news.news.map { it.toNewsEntity() }
+
+                val newsEntities = news.news.map {newsItem->
+                    val isSaved = savedNews.contains(newsItem.id)
+                    newsItem.toNewsEntity().copy(saved = isSaved)
+                }
                 newsDatabase.newsDao().insertAll(newsEntities)
             }
 
@@ -72,5 +76,4 @@ class NewsRemoteMediator(
             MediatorResult.Error(e)
         }
     }
-
 }

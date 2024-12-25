@@ -47,7 +47,6 @@ class ArticleViewModel @Inject constructor(
                             isLoading = false,
                             isError = false
                         )
-                        Log.d("ArticleViewModel", "News loaded: ${result.data}")
                     }
 
                     is NewsResult.Error -> {
@@ -63,13 +62,16 @@ class ArticleViewModel @Inject constructor(
 
     private fun saveArticle(news: News?) {
         viewModelScope.launch {
-            if (news != null) {
-                savedArticle(news.copy(saved = !news.saved))
-                _uiState.value = _uiState.value.copy(news = news.copy(saved = !news.saved))
-
+            news?.let {
+                val updatedNews = news.copy(saved = !news.saved)
+                savedArticle(updatedNews)
+                Log.d("ArticleViewModel", "Article saved: ${updatedNews.saved}")
+                _uiState.value = _uiState.value.copy(
+                    news = updatedNews
+                )
             }
+            // Kaydetme işlemi başarılıysa UIEffect tetiklenebilir:
         }
-        // Kaydetme işlemi başarılıysa UIEffect tetiklenebilir:
-
     }
+
 }

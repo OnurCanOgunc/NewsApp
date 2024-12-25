@@ -1,6 +1,7 @@
 package com.decode.composenews.data.mapper
 
 import com.decode.composenews.data.local.entity.NewsEntity
+import com.decode.composenews.data.local.entity.SavedNewsEntity
 import com.decode.composenews.data.remote.dto.NewsResponse
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.util.formatDate
@@ -42,5 +43,32 @@ fun NewsEntity.toNews(): News{
         title = title,
         url = url,
         saved = saved
+    )
+}
+
+fun News.toSavedNewsEntity(): SavedNewsEntity{
+    return SavedNewsEntity(
+        id = id,
+        author = author,
+        category = category,
+        description = description,
+        image = image,
+        published = published,
+        title = title,
+        url = url,
+    )
+}
+
+fun SavedNewsEntity.toNews(): News{
+    return News(
+        id = id,
+        author = author,
+        category = category,
+        description = description,
+        image = image,
+        published = published,
+        title = title,
+        url = url,
+        saved = true
     )
 }

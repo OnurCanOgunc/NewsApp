@@ -14,5 +14,6 @@ sealed class RecordNewsContract {
     sealed class RecordNewsUIEvent {
         object LoadSavedArticles : RecordNewsUIEvent()
         data class SaveArticle(val news: News) : RecordNewsUIEvent()
+        data class DeleteArticle(val news: News) : RecordNewsUIEvent()
     }
 }
