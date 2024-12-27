@@ -12,9 +12,9 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -27,7 +27,7 @@ fun TendingNewsChip(
     modifier: Modifier = Modifier,
     onCategorySelected: (String) -> Unit
 ) {
-    var checkedItem by remember { mutableIntStateOf(0) }
+    var checkedItem by rememberSaveable { mutableIntStateOf(0) }
     val options = immutableListOf<String>(
         "sports", "general", "programming",
         "science", "politics", "world",
@@ -47,7 +47,6 @@ fun TendingNewsChip(
                 onClick = {
                     checkedItem = index
                     onCategorySelected(option)
-
                 },
                 selected = checkedItem == index,
                 shape = SegmentedButtonDefaults.itemShape(

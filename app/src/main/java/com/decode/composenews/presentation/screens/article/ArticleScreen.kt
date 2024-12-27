@@ -23,10 +23,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -39,7 +42,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.decode.composenews.R
@@ -48,7 +50,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.compose.AsyncImage
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.screens.article.component.CustomButton
+import com.decode.composenews.util.collectWithLifecyle
 import com.decode.composenews.util.shareNews
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,17 +60,29 @@ fun ArticleScreen(
     modifier: Modifier = Modifier,
     newsId: String,
     uiState: ArticleContract.ArticleUIState,
+    uiEffect: Flow<ArticleContract.ArticleUIEffect>,
     onEvent: (ArticleContract.ArticleUIEvent) -> Unit,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-
+    val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(key1 = true) {
         onEvent(ArticleContract.ArticleUIEvent.Load(newsId))
     }
 
+    uiEffect.collectWithLifecyle { effect->
+        when (effect) {
+            is ArticleContract.ArticleUIEffect.SaveMessage -> {
+                snackbarHostState.showSnackbar(message = effect.message,withDismissAction = true)
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier,
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         topBar = {
             TopAppBar(
                 modifier = Modifier.shadow(elevation = 8.dp),
@@ -207,10 +223,4 @@ fun NewsContent(
             modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenPreview() {
-
 }

@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Feed
-import androidx.compose.material.icons.automirrored.outlined.Feed
 import androidx.compose.material.icons.filled.Bookmarks
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.Bookmarks
@@ -55,12 +53,6 @@ fun BottomAppBar(modifier: Modifier = Modifier, navController: NavController) {
             route = Screen.News
         ),
         NavItemState(
-            title = "Feed News",
-            selectedIcon = Icons.AutoMirrored.Filled.Feed,
-            unselectedIcon = Icons.AutoMirrored.Outlined.Feed,
-            route = Screen.FeedNews
-        ),
-        NavItemState(
             title = "Recorded News",
             selectedIcon = Icons.Filled.Bookmarks,
             unselectedIcon = Icons.Outlined.Bookmarks,
@@ -79,7 +71,6 @@ fun BottomAppBar(modifier: Modifier = Modifier, navController: NavController) {
 
     val isVisible = rememberSaveable(navBackStackEntry) {
         navBackStackEntry?.destination?.route == Screen.News::class.qualifiedName ||
-                navBackStackEntry?.destination?.route == Screen.FeedNews::class.qualifiedName ||
                 navBackStackEntry?.destination?.route == Screen.RecordedNews::class.qualifiedName
     }
 

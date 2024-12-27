@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,15 +68,6 @@ class NewsViewModel @Inject constructor(
                     it.copy(selectedCategory = event.category, news = newsPagingFlow)
                 }
             }
-
-            NewsContract.HomeUIEvent.Refresh -> { refreshNews()}
-        }
-    }
-
-    private fun refreshNews() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(searchText = "",news = newsPagingFlow) }
-            _uiEffect.emit(NewsContract.HomeUIEffect.ShowSnackbar("News refreshed"))
         }
     }
 

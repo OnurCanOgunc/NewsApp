@@ -13,6 +13,6 @@ object ArticleContract {
         data class Save(val news: News?) : ArticleUIEvent()
     }
     sealed class ArticleUIEffect {
-        object SaveMessage : ArticleUIEffect()
+        data class SaveMessage(val message: String) : ArticleUIEffect()
     }
 }

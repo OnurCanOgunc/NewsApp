@@ -10,9 +10,6 @@ sealed interface Screen {
     data class Article(val newsId: String): Screen
 
     @Serializable
-    object FeedNews : Screen
-
-    @Serializable
     object RecordedNews : Screen
 
     @Serializable

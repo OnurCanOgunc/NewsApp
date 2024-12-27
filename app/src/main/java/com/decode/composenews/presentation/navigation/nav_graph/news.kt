@@ -32,10 +32,12 @@ fun NavGraphBuilder.news(navController: NavController) {
         composable<Screen.Article> { backStackEntry ->
             val viewModel = hiltViewModel<ArticleViewModel>()
             val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+            val uiEffect = viewModel.uiEffect
             val argument = backStackEntry.toRoute<Screen.Article>()
             ArticleScreen(
                 uiState = uiState.value,
                 onEvent = viewModel::onEvent,
+                uiEffect = uiEffect,
                 newsId = argument.newsId,
                 navigateUp = { navController.navigateUp() }
             )
