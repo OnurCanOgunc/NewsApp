@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 
 fun Context.shareNews(newsTitle: String, newsLink: String) {
     val shareContent =
@@ -16,12 +15,17 @@ fun Context.shareNews(newsTitle: String, newsLink: String) {
     val shareIntent = Intent.createChooser(sendIntent, null)
     try {
         startActivity(shareIntent)
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         Toast.makeText(this, "Failed to share news!", Toast.LENGTH_SHORT).show()
     }
 }
 
 fun Context.openLink(url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    startActivity(intent, null)
+    val chooserIntent = Intent.createChooser(intent, "Select an App to Open News Details")
+    try {
+        startActivity(chooserIntent)
+    } catch (_: Exception) {
+        Toast.makeText(this, "News could not be opened!", Toast.LENGTH_SHORT).show()
+    }
 }
