@@ -91,9 +91,9 @@ class RecordNewsViewModel @Inject constructor(
             viewModelScope.launch {
                 savedArticle(article)
                 _uiState.value = _uiState.value.copy(
-                    news = _uiState.value.news + article // Haberi listeye geri ekle
+                    news = _uiState.value.news + article
                 )
-                lastNews.value = null // Geçici veriyi temizle
+                lastNews.value = null
             }
         }
     }

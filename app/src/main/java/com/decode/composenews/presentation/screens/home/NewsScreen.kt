@@ -26,14 +26,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.decode.composenews.R
 import com.decode.composenews.presentation.components.News
 import com.decode.composenews.presentation.components.SearchBar
 import com.decode.composenews.presentation.components.TendingNewsChip
 import com.decode.composenews.presentation.ui.theme.ExtraLightText
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEffect
 import com.decode.composenews.presentation.screens.home.NewsContract.HomeUIEvent

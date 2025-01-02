@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.decode.composenews.presentation.screens.recordednews.RecordNewsContract.RecordNewsUIEffect
 import com.decode.composenews.presentation.screens.recordednews.RecordNewsContract.RecordNewsUIEvent
 import com.decode.composenews.presentation.screens.recordednews.RecordNewsContract.RecordNewsUIState
-import com.decode.composenews.presentation.screens.recordednews.components.RecordedNewsItem
+import com.decode.composenews.presentation.screens.recordednews.component.RecordedNewsItem
 import com.decode.composenews.util.collectWithLifecyle
 import kotlinx.coroutines.flow.Flow
 
@@ -86,10 +86,14 @@ fun RecordedNewsScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    RecordedNewsItem(news = uiState.news, navigate = navigate, onSaveClick = {
-                        onEvent(RecordNewsUIEvent.SaveArticle(it))
-                        Log.d("TAG", "RecordedNewsScreen: $it")
-                    })
+                    RecordedNewsItem(
+                        newsList = uiState.news,
+                        navigate = navigate,
+                        onSaveClick = {
+                            onEvent(RecordNewsUIEvent.SaveArticle(it))
+                            Log.d("TAG", "RecordedNewsScreen: $it")
+                        },
+                    )
                 }
                 SnackbarHost(
                     modifier = Modifier

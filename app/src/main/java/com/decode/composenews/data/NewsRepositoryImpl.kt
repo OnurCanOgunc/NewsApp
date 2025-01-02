@@ -90,7 +90,6 @@ class NewsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveArticle(news: News) {
-        Log.d("ArticleRepository", "Article saved: ${news.saved}")
         if (!news.saved) {
             val savedNews = news.toSavedNewsEntity()
             newsDb.savedNewsDao().deleteSavedNews(savedNews)

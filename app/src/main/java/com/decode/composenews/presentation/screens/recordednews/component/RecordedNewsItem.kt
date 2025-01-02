@@ -1,4 +1,4 @@
-package com.decode.composenews.presentation.screens.recordednews.components
+package com.decode.composenews.presentation.screens.recordednews.component
 
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -35,12 +35,13 @@ import com.decode.composenews.presentation.ui.theme.LightText
 @Composable
 fun RecordedNewsItem(
     modifier: Modifier = Modifier,
-    news: List<News>?,
+    newsList: List<News>?,
     navigate: (String) -> Unit,
     onSaveClick: (News) -> Unit
 ) {
 
-    if (news == null) {
+
+    if (newsList == null) {
         Box(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -56,10 +57,14 @@ fun RecordedNewsItem(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(
-            items = news,
+            items = newsList,
             key = { it.id },
         ) { item ->
-            NewsItem(news = item, onSaveClick = onSaveClick, navigate = navigate)
+            NewsItem(
+                news = item,
+                onSaveClick = onSaveClick,
+                navigate = navigate,
+            )
         }
     }
 
