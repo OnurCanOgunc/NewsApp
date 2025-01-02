@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Abc
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -51,6 +52,7 @@ import coil.compose.AsyncImage
 import com.decode.composenews.domain.model.News
 import com.decode.composenews.presentation.screens.article.component.CustomButton
 import com.decode.composenews.util.collectWithLifecyle
+import com.decode.composenews.util.openLink
 import com.decode.composenews.util.shareNews
 import kotlinx.coroutines.flow.Flow
 
@@ -222,5 +224,14 @@ fun NewsContent(
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
+        Button(
+            onClick = {
+                val newsLink = news.url
+                context.openLink(newsLink)
+            },
+            modifier = Modifier
+        ) {
+            Text(text = "Read More")
+        }
     }
 }
